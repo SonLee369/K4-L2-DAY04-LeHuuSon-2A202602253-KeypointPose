@@ -46,7 +46,7 @@
 - Vì sao: Kích thước quá nhỏ không thể ước lượng chính xác cấu trúc giải phẫu. Mọi người được gán phải đủ lớn để xác định khớp.
 - Nếu người khác quyết ngược lại thì model học sai cái gì: Nếu cố gán, model sẽ bị ép học các đặc trưng nhiễu từ các khối pixel mờ nhạt, làm giảm precision (`pose_precision`) tổng thể trên các đối tượng rõ ràng.
 
-## 4. Sau khi so visibility report với bạn cùng nhóm[cite: 4]
+## 4. Sau khi so visibility report với bạn cùng nhóm
 
 - Khớp lệch `%v=1` nhiều nhất: `left_hip` (bạn `75%` / họ `40%`)
 - Nguyên nhân là **guideline chưa rõ** hay **một trong hai bên gán sai**: Nguyên nhân do guideline chưa rõ về cách xử lý các điểm giải phẫu ước lượng đối với trang phục rộng/dài.
