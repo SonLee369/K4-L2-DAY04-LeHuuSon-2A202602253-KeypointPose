@@ -14,14 +14,18 @@
 
 ## 2. Luật của nhóm bạn (phải điền)
 
-| Tình huống                                        | Luật nhóm bạn chọn                                                                                                                | Vì sao                                                                                                         |
-| ------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
-| Hông của người mặc quần áo dài                    | Đặt chấm ước lượng tại vị trí thắt lưng giải phẫu, đánh cờ `v=1`.                                                                 | Quần áo che khuất đường viền cơ thể thật, vị trí hông không thể nhìn thấy trực tiếp mà phải ước lượng.         |
-| Tai bị tóc hoặc mũ bảo hiểm che một phần          | Đặt chấm ở vị trí ước lượng của lỗ tai dưới tóc/mũ, đánh cờ `v=1`.                                                                | Không nhìn thấy rõ toàn bộ cấu trúc da mặt/tai, phải đánh dấu bị che khuất.                                    |
-| Người bị cắt ở mép ảnh (chỉ thấy từ hông trở lên) | Các khớp phần thân dưới (đầu gối, mắt cá) đánh `v=0` và KHÔNG đặt chấm.                                                           | Khớp đã rơi hoàn toàn ra ngoài mép khung hình.                                                                 |
-| Cổ tay nằm sau tay lái / sau thân mình            | Đặt chấm ở vị trí ước lượng, đánh `v=1`.                                                                                          | Khớp vẫn nằm trong khung hình nhưng bị vật thể khác che khuất (như trong ảnh `train_04`).                      |
-| Hai người chồng lên nhau                          | Gán trọn vẹn người phía trước (`v=2`), các khớp bị che của người phía sau đánh `v=1` và ước lượng vị trí.                         | Tránh để model học nhầm điểm của người này sang cơ thể của người kế bên (lỗi nhầm người).                      |
-| Người nhỏ đến mức nào thì không gán nữa           | Bỏ qua (không tạo bộ xương) nếu chiều cao người trong ảnh nhỏ hơn 1/10 chiều cao khung hình hoặc không thể phân định rõ vai/hông. | Việc cố gán những người quá nhỏ ở hậu cảnh (như trong `train_03`) sẽ tạo ra nhãn nhiễu, làm giảm độ chính xác. |
+| Tình huống                                        | Luật nhóm bạn chọn                                                                                                                                          | Vì sao                                                                                                                                      |
+| ------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| Hông của người mặc quần áo dài                    | Đặt chấm ước lượng tại vị trí thắt lưng giải phẫu (dựa theo tỷ lệ vai-đùi), gán `v=1`.<br><img src="images/case1.jpg" width="150">                          | Bề mặt hông không nhìn thấy trực tiếp nhưng vẫn nằm trong khung hình, phải giữ đúng topology.                                               |
+| Tai bị tóc hoặc mũ bảo hiểm che một phần          | Gán `v=1` và chấm điểm ngay dưới vành mũ/lớp tóc theo cấu trúc đầu người.<br><img src="images/case2-3.jpg" width="150">                                     | Điểm tai không lộ diện nhưng không vượt ra ngoài mép ảnh.                                                                                   |
+| Người bị cắt ở mép ảnh (chỉ thấy từ hông trở lên) | Các khớp từ hông trở xuống gán `v=0` và không đặt chấm.<br><img src="images/case2-3.jpg" width="150">                                                       | Các điểm này thực sự nằm ngoài mép ảnh, nếu cố gắng nội suy sẽ tạo ra toạ độ vượt ra ngoài khung, vi phạm luật `v=0`.                       |
+| Cổ tay nằm sau tay lái / sau thân mình            | Gán `v=1`, nội suy vị trí cổ tay kéo dài từ khuỷu tay.<br><img src="images/case4.jpg" width="150">                                                          | Khớp vẫn ở trong ảnh nhưng bị vật cản (tay lái) che khuất bề mặt.                                                                           |
+| Hai người chồng lên nhau                          | Khớp người bị che gán `v=1`, khớp người che gán `v=2`. Chú ý click từng điểm thay vì di chuyển cả bounding box.<br><img src="images/case5.jpg" width="150"> | Giúp model phân biệt được depth (độ sâu) giữa người đứng trước và người đứng sau, tránh tình trạng gán nhầm điểm xương sang người bên cạnh. |
+| Người nhỏ đến mức nào thì không gán nữa           | Bỏ qua người nếu diện tích bounding box < 1/10 chiều cao ảnh HOẶC zoom 200% không thể nhận diện đủ các chi.<br><img src="images/case6.jpg" width="150">     | Nhãn quá mờ/nhỏ sẽ tạo ra "nhiễu", model không học được cấu trúc giải phẫu chuẩn và gây mAP thấp (như ca sai lệch ở train_03).              |
+
+Với mỗi luật, chèn **một ảnh mẫu** (screenshot từ CVAT) thay vì chỉ viết một câu.
+Slide 12 nói rõ: khớp không có bề mặt nhìn thấy được thì phải có ảnh mẫu, không phải
+một câu văn chung chung[cite: 4].
 
 ## 3. Ba ca mơ hồ đã gặp (bắt buộc, ghi ít nhất 3)
 
@@ -46,7 +50,7 @@
 - Vì sao: Kích thước quá nhỏ không thể ước lượng chính xác cấu trúc giải phẫu. Mọi người được gán phải đủ lớn để xác định khớp.
 - Nếu người khác quyết ngược lại thì model học sai cái gì: Nếu cố gán, model sẽ bị ép học các đặc trưng nhiễu từ các khối pixel mờ nhạt, làm giảm precision (`pose_precision`) tổng thể trên các đối tượng rõ ràng.
 
-## 4. Sau khi so visibility report với bạn cùng nhóm
+## 4. Sau khi so visibility report với bạn cùng nhóm[cite: 4]
 
 - Khớp lệch `%v=1` nhiều nhất: `left_hip` (bạn `75%` / họ `40%`)
 - Nguyên nhân là **guideline chưa rõ** hay **một trong hai bên gán sai**: Nguyên nhân do guideline chưa rõ về cách xử lý các điểm giải phẫu ước lượng đối với trang phục rộng/dài.
