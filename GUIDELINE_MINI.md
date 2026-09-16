@@ -25,7 +25,7 @@
 
 Với mỗi luật, chèn **một ảnh mẫu** (screenshot từ CVAT) thay vì chỉ viết một câu.
 Slide 12 nói rõ: khớp không có bề mặt nhìn thấy được thì phải có ảnh mẫu, không phải
-một câu văn chung chung[cite: 4].
+một câu văn chung chung.
 
 ## 3. Ba ca mơ hồ đã gặp (bắt buộc, ghi ít nhất 3)
 
